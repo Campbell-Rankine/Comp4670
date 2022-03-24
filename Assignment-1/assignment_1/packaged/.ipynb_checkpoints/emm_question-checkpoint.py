@@ -50,7 +50,7 @@ def e_step_EMM(data, pi, eta, sufstat, N, K):
     gamma = np.zeros((N,K))
     ### - Get div value - ###
     arr = weighted_probs(data, pi, eta, sufstat, N, K)
-    div = np.sum(arr)
+    div = np.sum(arr, axis = 0)
     gamma = arr / div
     assert gamma.shape == (N,K)
     return gamma # (N, K)
@@ -65,11 +65,12 @@ def m_step_EMM(data, gamma, sufstat, exp_to_nat, N, K):
     # Return shapes should be (K,1), (K,m).
     ### CODE HERE ###
     ###- Calculate pi_new - ###
-    pi_new = (np.sum(gamma, axis = 0) / N)
+    pi_new = np.zeros(K)
     assert pi_new.shape == (K,)
-    eta_n = gamma.T@sufstat(data)
-    eta_new = np.zeros(eta_n.shape)
+    eta_new = []
     for k in range(K):
-        eta_new[k] = exp_to_nat(eta_n[k] / np.sum(gamma, axis = 0)[k])
+        pi_new[k] = np.sum(gamma[:, k]) / N
+        eta_new.append(exp_to_nat(np.sum(sufstat(data) * gamma[:,k].reshape(N,1), axis = 0) / np.sum(gamma[:,k])))
+    eta_new = np.array(eta_new)
     print(eta_new.shape, K)
     return pi_new, eta_new # (K,1), (K,m)
