@@ -50,7 +50,7 @@ def e_step_EMM(data, pi, eta, sufstat, N, K):
     gamma = np.zeros((N,K))
     ### - Get div value - ###
     arr = weighted_probs(data, pi, eta, sufstat, N, K)
-    div = np.sum(arr, axis = 0)
+    div = np.sum(arr, axis = 1, keepdims = True)
     gamma = arr / div
     assert gamma.shape == (N,K)
     return gamma # (N, K)
