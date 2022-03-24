@@ -36,9 +36,7 @@ def weighted_probs(data, pi, eta, sufstat, N, K):
     ### CODE HERE ###
     probs = np.zeros((N,K))
     for k in range(K):
-        for n in range(N):
-            probs[n, k] = pi[k] * exponential_family_pdf(x[n], sufstat, eta[k])
-    
+            probs[:, k] = pi[k] * exponential_family_pdf(data, sufstat, eta[k])
     assert probs.shape == (N,K)
     return probs # (N, K)
 
@@ -49,15 +47,12 @@ def e_step_EMM(data, pi, eta, sufstat, N, K):
     # This works for scalars ((1,) -> (2,)); and 1D arrays ((N,) -> (N, 2)).
     # It should use weighted_probs.
     ### CODE HERE ###
-    gamma = np.zeros(N,K)
-    
+    gamma = np.zeros((N,K))
     ### - Get div value - ###
-    arr = (weighted_probs(data, pi, eta, sufstat, N, K)
+    arr = weighted_probs(data, pi, eta, sufstat, N, K)
     div = np.sum(arr)
-    for k in range(K):
-        for n in range(N):
-            gamma[n,k] = arr[n, k] / div
-    assert gamma.shape = (N,K)
+    gamma = arr / div
+    assert gamma.shape == (N,K)
     return gamma # (N, K)
 
 def m_step_EMM(data, gamma, sufstat, exp_to_nat, N, K):
@@ -69,5 +64,12 @@ def m_step_EMM(data, gamma, sufstat, exp_to_nat, N, K):
     # This works for scalars (1,) -> (2,); and 1D arrays (N,) -> (N, 2).
     # Return shapes should be (K,1), (K,m).
     ### CODE HERE ###
-    raise NotImplementedError
+    ###- Calculate pi_new - ###
+    pi_new = (np.sum(gamma, axis = 0) / N)
+    assert pi_new.shape == (K,)
+    eta_n = gamma.T@sufstat(data)
+    eta_new = np.zeros(eta_n.shape)
+    for k in range(K):
+        eta_new[k] = exp_to_nat(eta_n[k] / np.sum(gamma, axis = 0)[k])
+    print(eta_new.shape, K)
     return pi_new, eta_new # (K,1), (K,m)
