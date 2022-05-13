@@ -2,11 +2,11 @@
 ### FILL IN THE FOLLOWING: ###
 ##############################
 
-U_ID = "uXXXXXXX"  # You need to specify!
+U_ID = "u6997593"  # You need to specify!
 
 SUBMISSION_LIST = [
     # No need to submit theory question sheet `./assignment_1.pdf` or code framework `./framework/*`
-    './_PATH_TO_SOLUTION_PDF_FILE_.pdf',  # Change to the PDF of your theory solutions!
+    './u6997593_theory.pdf',  # Change to the PDF of your theory solutions!
     './emm_question.py',  # Make sure to include this!
     './blr_question.py',  # Make sure to include this!
     './implementation_viewer.ipynb',  # Make sure to include this!
